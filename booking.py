@@ -45,7 +45,7 @@ def check_current_time(begin_time: datetime, end_time: datetime) -> Tuple[dateti
     return current_time, (begin_time <= current_time) and (current_time < end_time)
 
 
-def make_a_reservation(email: str, password: str, reservation_time: int) -> bool:
+def make_a_reservation(email: str, password: str, court:int ,reservation_time: int) -> bool:
     '''
     Make a reservation for the given time and name at the booking site.
     Return the status if the reservation is made successfully or not.
@@ -80,7 +80,7 @@ def make_a_reservation(email: str, password: str, reservation_time: int) -> bool
 
         driver.find_element(By.XPATH, '//*[@id="ctl00_MainContent_btnBasket"]').click()
 
-        # fill in the name
+      
         return True
     except Exception as e:
         print(e)
@@ -90,7 +90,7 @@ def make_a_reservation(email: str, password: str, reservation_time: int) -> bool
         driver.quit()
 
 
-def try_booking(email: str, password: str, reservation_time: int) -> None:
+def try_booking(email: str, password: str,court:int, reservation_time: int) -> None:
     '''
     Try booking a reservation until either one reservation is made successfully or the attempt time reaches the max_try
     '''
@@ -119,7 +119,7 @@ def try_booking(email: str, password: str, reservation_time: int) -> None:
 
         print(f'----- try : {try_num} -----')
         # try to get ticket
-        reservation_completed = make_a_reservation(email, password, reservation_time,court)
+        reservation_completed = make_a_reservation(email, password,court,reservation_time)
 
         if reservation_completed:
             print('Got a ticket!!')
@@ -134,4 +134,4 @@ def try_booking(email: str, password: str, reservation_time: int) -> None:
 
 
 if __name__ == '__main__':
-    try_booking(email, password, reservation_time)
+    try_booking(email, password, court,reservation_time)
