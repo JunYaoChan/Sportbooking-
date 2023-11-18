@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 
 booking_site_url = "https://soton.leisurecloud.net/Connect/mrmProductStatus.aspx"
 
-begin_time = datetime.combine(datetime.today().date(), time(23, 59, 0))
+begin_time = datetime.combine(datetime.today().date(), time(21, 00, 0))
 # Calculate tomorrow's date by adding one day
 tomorrow_date = datetime.today().date() + timedelta(1)
 
@@ -25,7 +25,8 @@ max_try = 5
 
 email = sys.argv[1]
 password = sys.argv[2]
-reservation_time = int(sys.argv[3])
+court = int(sys.argv[3])
+reservation_time = int(sys.argv[4])
 
 options = Options()
 # Add any desired options to the 'options' object here
@@ -72,9 +73,10 @@ def make_a_reservation(email: str, password: str, reservation_time: int) -> bool
         time_difference = end_time - datetime.now()
         sleep(time_difference.total_seconds())
         # click the given reservation time's box
-        sleep(0.5)
         driver.find_element(By.XPATH, '//*[@id="ctl00_MainContent_Button2"]').click()
-        driver.find_element(By.XPATH, '//*[@id="ctl00_MainContent_grdResourceView"]/tbody/tr[2]/td[4]/input').click()
+        sleep(0.5)
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, f'//*[@id="ctl00_MainContent_grdResourceView"]/tbody/tr[{reservation_time - 5}]/td[{court - 4}]/input'))).click()
 
         driver.find_element(By.XPATH, '//*[@id="ctl00_MainContent_btnBasket"]').click()
 
@@ -117,7 +119,7 @@ def try_booking(email: str, password: str, reservation_time: int) -> None:
 
         print(f'----- try : {try_num} -----')
         # try to get ticket
-        reservation_completed = make_a_reservation(email, password, reservation_time)
+        reservation_completed = make_a_reservation(email, password, reservation_time,court)
 
         if reservation_completed:
             print('Got a ticket!!')
